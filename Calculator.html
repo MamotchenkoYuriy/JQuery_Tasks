@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/calculator_style.css">
+    <script src="js/jquery-2.1.3.js"></script>
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <div class="display-block">
+        История операций:
+        <div class="history">
+            <div class="history-result">2 + 7 + 9 + 7 => 59</div>
+            <div class="history-result">2 + 7 + 9 + 7 => 59</div>
+        </div>
+        <span id="lastHistory"></span>
+        <input type="text" id="result">
+    </div>
+    <div class="buttons">
+            <div class="button operation" onclick="DoOperation('<--')"><--</div>
+            <div class="button operation" onclick="DoOperation('CE')">CE</div>
+            <div class="button operation" onclick="DoOperation('C')">C</div>
+            <div class="button operation" onclick="DoOperation('+-')">+-</div>
+            <div class="button operation" onclick="DoOperation('#')">#</div>
+            <div class="button value" onclick="ValueBtnClick('7')">7</div>
+            <div class="button value" onclick="ValueBtnClick('8')">8</div>
+            <div class="button value" onclick="ValueBtnClick('9')">9</div>
+            <div class="button operation" onclick="DoOperation('/')">/</div>
+            <div class="button operation" onclick="DoOperation('%')">%</div>
+            <div class="button value" onclick="ValueBtnClick('4')">4</div>
+            <div class="button value" onclick="ValueBtnClick('5')">5</div>
+            <div class="button value" onclick="ValueBtnClick('6')">6</div>
+            <div class="button operation" onclick="DoOperation('*')">*</div>
+            <div class="button operation" onclick="DoOperation('1/x')">1/x</div>
+            <div class="button value" onclick="ValueBtnClick('1')">1</div>
+            <div class="button value" onclick="ValueBtnClick('2')">2</div>
+            <div class="button value" onclick="ValueBtnClick('3')">3</div>
+            <div class="button operation" onclick="DoOperation('-')">-</div>
+            <div class="button operation" onclick="DoOperation('+')">+</div>
+            <div class="button double-width" onclick="ValueBtnClick('0')">0</div>
+            <div class="button value" onclick="ValueBtnClick('.')">.</div>
+            <div class="button double-width operation" onclick="DoOperation('=')">=</div>
+    </div>
+</div>
+<script>
+    var OneOperatorOperations = new Array('1/x', '%', '#', '+-', '<--', 'CE', 'C', '=');
+    var operationResult = 0.0;
+    var lastIndex = 0;
+    var lastOperation = '';
+    var lastHistory = "";
+
+    function InsertIntoLastOperationField(operation, value) {
+        lastHistory += ' ' + value + ' ' + operation;
+        $('#lastHistory').html(lastHistory);
+    }
+    function PreLoud(){
+        $('#result').val('0');
+    }
+
+    function DoOperation(operation){
+        if(OneOperatorOperations.lastIndexOf(operation) !=-1){
+            var input = $('#result');
+            switch (operation){
+                case '#':
+                    input.val(Math.sqrt(input.val()));
+                    break;
+                case '%':
+                        operationResult += operationResult * input.val() / 100;
+                        InsertIntoLastOperationField(operation, operationResult * input.val() / 100);
+                    break;
+                case '<--':
+                    if(input.val().length == 1)
+                        input.val(0);
+                    else
+                        input.val(input.val().slice(0, input.val().length - 1));
+                    break;
+                case 'CE':
+                        input.val('0');
+                    break;
+                case 'C':
+                        operationResult = 0.0;
+                        lastOperation = '';
+                        lastHistory = '';
+                        $('#lastHistory').html('');
+                    break;
+                case '1/x':
+                        input.val(1 / input.val());
+                    break;
+                case '+-':
+                        if(input.val() > 0){
+                            input.val('-' + input.val());
+                        }
+                        else if(input.val() < 0){
+                            input.val(input.val().slice(1, input.val().length));
+                        }
+                    break;
+                case '=':
+                        if(lastHistory!=''){
+                            operationResult = eval(operationResult + lastOperation + input.val());
+                            var history = $('.history');
+                            var appendText ='<div class="history-result">' + lastHistory + ' ' + input.val() + ' ==> ' + operationResult +  '</div>';
+                            history.append(appendText);
+                            $('#lastHistory').html("");
+                            $('#result').val("");
+                        }
+                    break;
+            }
+        }
+        else{
+            var input = $('#result');
+            if(input.val() != '0'){
+                if(lastOperation != ''){
+                    operationResult = eval(operationResult + lastOperation + input.val());
+                    InsertIntoLastOperationField(operation, input.val());
+                    lastOperation = operation;
+                    input.val('0');
+                }
+                else{
+                    InsertIntoLastOperationField(operation, input.val());
+                    lastOperation = operation;
+                    operationResult = input.val();
+                    input.val('0');
+                }
+            }else{
+                lastOperation = operation;
+                lastHistory = lastHistory.slice(0, lastHistory.length - 1) + operation;
+                $('.lastHistory').html(lastHistory);
+            }
+        }
+    }
+    function ValueBtnClick(value){
+        var input = $('#result');
+        if(value == '.'){
+            if(input.val().indexOf('.') == -1){
+                input.val(input.val() + '' + value);
+            }
+        }
+        else if(input.val() != '0'){
+            input.val(input.val() + '' + value);
+        }
+        else{
+            input.val(value);
+        }
+    }
+
+    window.document.load = PreLoud();
+</script>
+</body>
+</html>

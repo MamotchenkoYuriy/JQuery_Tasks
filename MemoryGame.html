@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/memory_game_style.css">
+    <script src="js/jquery-2.1.3.js"></script>
+    <title></title>
+</head>
+<body>
+<div class="container">
+    <div class="card hide" id="0"></div>
+    <div class="card hide" id="1"></div>
+    <div class="card hide" id="2"></div>
+    <div class="card hide" id="3"></div>
+    <div class="card hide" id="4"></div>
+    <div class="card hide" id="5"></div>
+    <div class="card hide" id="6"></div>
+    <div class="card hide" id="7"></div>
+    <div class="card hide" id="8"></div>
+    <div class="card hide" id="9"></div>
+    <div class="card hide" id="10"></div>
+    <div class="card hide" id="11"></div>
+    <div class="card hide" id="12"></div>
+    <div class="card hide" id="13"></div>
+    <div class="card hide" id="14"></div>
+    <div class="card hide" id="15"></div>
+    <div class="card hide" id="16"></div>
+    <div class="card hide" id="17"></div>
+    <div class="card hide" id="18"></div>
+    <div class="card hide" id="19"></div>
+    <div class="card hide" id="20"></div>
+    <div class="card hide" id="21"></div>
+    <div class="card hide" id="22"></div>
+    <div class="card hide" id="23"></div>
+    <div class="card hide" id="24"></div>
+    <div class="card hide" id="25"></div>
+    <div class="card hide" id="26"></div>
+    <div class="card hide" id="27"></div>
+    <div class="card hide" id="28"></div>
+    <div class="card hide" id="29"></div>
+    <div class="card hide" id="30"></div>
+    <div class="card hide" id="31"></div>
+    <div class="card hide" id="32"></div>
+    <div class="card hide" id="33"></div>
+    <div class="card hide" id="34"></div>
+    <div class="card hide" id="35"></div>
+    <div class="card hide" id="36"></div>
+    <div class="card hide" id="37"></div>
+    <div class="card hide" id="38"></div>
+    <div class="card hide" id="39"></div>
+</div>
+<script>
+    var maxValue = 9;
+    var cardArray = new Array();
+    var selectedCountCards = 0;
+    var lastCardId = '';
+    var backCards = new Array();
+
+    Array.prototype.mix = function()
+    {
+        for(var i = 0; i < this.length; i++)
+        {
+            var j = Math.floor(Math.random() * (i+1));
+            var temp = this[j];
+            this[j] = this[i];
+            this[i] = temp;
+        }
+    };
+
+    function Generate(){
+        cardArray = new Array();
+        for(var i = 0; i<40; i +=2){
+            var value = Math.floor(Math.random() * maxValue);
+            cardArray[i] = value;
+            cardArray[i+1] = value;
+        }
+    }
+
+    function CardClick(card){
+        var cardId;
+        cardId = card.attr('id');
+        card.removeClass('hide');
+        card.html(cardArray[cardId]);
+        CompareCards(cardId);
+    }
+
+    function CompareCards(id){
+        if(lastCardId!=''){
+            if(cardArray[lastCardId] == cardArray[id]){
+                selectedCountCards +=2;
+                if(selectedCountCards == cardArray.length){
+                    alert("Вы выиграли");
+                }
+            }
+            else{
+                backCards = new Array();
+                backCards[0]=lastCardId;
+                backCards[1] = id;
+                setTimeout('FlipBack()', 1000);
+            }
+            lastCardId = '';
+        }
+        else {
+            lastCardId = id;
+        }
+    }
+
+    function FlipBack(){
+        var fcard = $('#' + backCards[0]);
+        fcard.addClass('hide');
+        fcard.html('');
+        var card = $('#' + backCards[1]);
+        card.addClass('hide');
+        card.html('');
+    }
+
+    function PreLoud(){
+        Generate();
+        cardArray.mix();
+    }
+
+    $(document).ready(function(){
+        PreLoud();
+        $('.card').click(function(){
+            CardClick($(this));
+        });
+    })
+</script>
+</body>
+</html>

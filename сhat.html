@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/clock_style.css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title></title>
+</head>
+<body>
+<div id="chat_container">
+    <div id="chat">
+        <div class="message">
+            <i>Проверка работы</i><span>101010</span>
+        </div>
+        <!-- -->
+        <div id="needPlace"></div>
+    </div>
+    <input type="text" id="inner_text">
+    <input type="button" onclick="InnerText()" value="Отправить" id="btn">
+</div>
+<script>
+    function InnerText(){
+        var date = new Date();
+        var input =$('#inner_text');
+        var text = input.val();
+        if (text == ""){
+            alert("НУ ты и ГАВНЮК!!!");
+            return;
+        }
+        input.val("");
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var seconds = date.getSeconds();
+        var currentData =  hours + ":" + minutes + ":" + seconds;
+        var chat = $('#chat');
+        var needText = "<div class='message'>" + "<i>" + text + "</i> <span>"+ currentData + "</span> </div>";
+        //var needPlace = $('#needPlace');
+        chat.append(needText);
+        //needPlace.insertAfter(needText);
+
+        /*
+        var needPlace = document.getElementById("needPlace");
+        var text = document.createTextNode(needText);
+        var newBlock = document.createElement("div");
+        newBlock.className = "message";
+        newBlock.innerHTML = needText;
+        var child = needPlace;
+        child.parentNode.insertBefore(newBlock, child);
+        document.getElementById("inner_text").value = "";
+        */
+        return;
+    }
+    function CreateEvent(){
+        window.document.getElementById("s").onclick = InnerText;
+    }
+</script>
+
+</body>
+</html>
